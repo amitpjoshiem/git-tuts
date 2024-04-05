@@ -1,13 +1,18 @@
-# .github/release.yml
-
 changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - octocat
   categories:
-    - title: 🏕 Features
+    - title: "Breaking Changes \U0001F6E0"
+      labels:
+        - Semver-Major
+        - breaking-change
+    - title: "Exciting New Features \U0001F389"
+      labels:
+        - Semver-Minor
+        - enhancement
+    - title: Other Changes
       labels:
         - '*'
-      exclude:
-        labels:
-          - dependencies
-    - title: 👒 Dependencies
-      labels:
-        - dependencies
