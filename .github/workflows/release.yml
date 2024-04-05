@@ -14,22 +14,27 @@ jobs:
 
       - name: Retrieve pull request information
         id: pr-info
-        uses: gr2m/get-json-paths-action@v1
-        with:
-          url: ${{ github.event.pull_request.url }}
-          jsonPath: |
-            .title
-            .body
-            .labels[*].name
-            .user.login
+        run: |
+          PR_NUMBER=$(echo "${{ github.event.pull_request.url }}" | awk -F'/' '{print $NF}')
+          PR_JSON=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER")
+          TITLE=$(echo "$PR_JSON" | jq -r .title)
+          BODY=$(echo "$PR_JSON" | jq -r .body)
+          USER=$(echo "$PR_JSON" | jq -r .user.login)
+          LABELS=$(echo "$PR_JSON" | jq -r '.labels | map(.name) | join(", ")')
+          echo "::set-output name=title::$TITLE"
+          echo "::set-output name=body::$BODY"
+          echo "::set-output name=user::$USER"
+          echo "::set-output name=labels::$LABELS"
 
       # Additional steps to extract, format, and append release notes
       # (e.g., using scripts or other actions)
 
       - name: Commit release notes
         run: |
-          git config --local user.email "amitjoshiengineersmind@gmail.com"
-          git config --local user.name "amitpjoshiem"
-          git add RELEASE_NOTES.md
-          git commit -m "Add release notes for PR #${{ github.event.pull_request.number }}"
-          git push
+          echo "Release notes for PR ${{ github.event.pull_request.number }}:"
+          echo "Title: ${{ steps.pr-info.outputs.title }}"
+          echo "Body: ${{ steps.pr-info.outputs.body }}"
+          echo "User: ${{ steps.pr-info.outputs.user }}"
+          echo "Labels: ${{ steps.pr-info.outputs.labels }}"
+          
+          # Add your logic to append the release notes to a file and commit changes
