@@ -1,18 +1,35 @@
-changelog:
-  exclude:
-    labels:
-      - ignore-for-release
-    authors:
-      - octocat
-  categories:
-    - title: "Breaking Changes \U0001F6E0"
-      labels:
-        - Semver-Major
-        - breaking-change
-    - title: "Exciting New Features \U0001F389"
-      labels:
-        - Semver-Minor
-        - enhancement
-    - title: Other Changes
-      labels:
-        - '*'
+name: Generate Release Notes
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  generate-release-notes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Retrieve pull request information
+        id: pr-info
+        uses: gr2m/get-json-paths-action@v1
+        with:
+          url: ${{ github.event.pull_request.url }}
+          jsonPath: |
+            .title
+            .body
+            .labels[*].name
+            .user.login
+
+      # Additional steps to extract, format, and append release notes
+      # (e.g., using scripts or other actions)
+
+      - name: Commit release notes
+        run: |
+          git config --local user.email "amitjoshiengineersmind@gmail.com"
+          git config --local user.name "amitpjoshiem"
+          git add RELEASE_NOTES.md
+          git commit -m "Add release notes for PR #${{ github.event.pull_request.number }}"
+          git push
