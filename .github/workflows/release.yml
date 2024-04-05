@@ -21,10 +21,10 @@ jobs:
           BODY=$(echo "$PR_JSON" | jq -r .body)
           USER=$(echo "$PR_JSON" | jq -r .user.login)
           LABELS=$(echo "$PR_JSON" | jq -r '.labels | map(.name) | join(", ")')
-          echo "::set-output name=title::$TITLE"
-          echo "::set-output name=body::$BODY"
-          echo "::set-output name=user::$USER"
-          echo "::set-output name=labels::$LABELS"
+          echo "TITLE=${TITLE}" >> $GITHUB_ENV
+          echo "BODY=${BODY}" >> $GITHUB_ENV
+          echo "USER=${USER}" >> $GITHUB_ENV
+          echo "LABELS=${LABELS}" >> $GITHUB_ENV
 
       # Additional steps to extract, format, and append release notes
       # (e.g., using scripts or other actions)
@@ -32,9 +32,9 @@ jobs:
       - name: Commit release notes
         run: |
           echo "Release notes for PR ${{ github.event.pull_request.number }}:"
-          echo "Title: ${{ steps.pr-info.outputs.title }}"
-          echo "Body: ${{ steps.pr-info.outputs.body }}"
-          echo "User: ${{ steps.pr-info.outputs.user }}"
-          echo "Labels: ${{ steps.pr-info.outputs.labels }}"
+          echo "Title: ${{ env.TITLE }}"
+          echo "Body: ${{ env.BODY }}"
+          echo "User: ${{ env.USER }}"
+          echo "Labels: ${{ env.LABELS }}"
           
           # Add your logic to append the release notes to a file and commit changes
