@@ -1,3 +1,3 @@
 <?php
-echo "Registration page called..";
+    echo "Registration page called..";
 ?>
