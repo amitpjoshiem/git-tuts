@@ -1,7 +1,5 @@
 <?php
+    echo "Hello World...";
 
-echo "Hello World...";
-
-echo "Commit 2nd time";
-
+    echo "Commit 2nd time";
 ?>
