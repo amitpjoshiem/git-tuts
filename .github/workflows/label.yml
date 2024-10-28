@@ -1,0 +1,88 @@
+name: Manage Labels
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  create-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "GH_TOKEN is set up for GitHub CLI"
+
+      - name: Create labels if not exist
+        id: check-labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure GH_TOKEN is available
+        run: |
+          existing_labels=$(gh label list --json name -q '.[] | .name')
+          labels_to_create=""
+          
+          # Define your labels
+          labels="Config:red Database:blue Validation:purple documentation:green"
+
+          for label in $labels; do
+            label_name=$(echo $label | cut -d':' -f1)
+            if [[ ! $existing_labels =~ $label_name ]]; then
+              labels_to_create="$labels_to_create $label"
+            fi
+          done
+
+          # Create labels only if they don't exist
+          if [ -n "$labels_to_create" ]; then
+            echo "Creating labels: $labels_to_create"
+            echo "$labels_to_create" | xargs -n1 gh label create
+          else
+            echo "All labels already exist."
+          fi
+
+      - name: Get modified files
+        id: modified-files
+        run: |
+          echo "MODIFIED_FILES<<EOF" >> $GITHUB_ENV
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Assign labels based on modified files
+        id: assign-labels
+        run: |
+          labels=""
+          for file in $MODIFIED_FILES; do
+            if [[ $file == "src/config/"* ]]; then
+              labels="${labels}Config,"
+            elif [[ $file == "src/packages/"* ]]; then
+              labels="${labels}Database,"
+            elif [[ $file == "src/validations/"* ]]; then
+              labels="${labels}Validation,"
+            elif [[ $file == "src/routes/"* ]]; then
+              labels="${labels}documentation,"
+            fi
+          done
+
+          # Remove trailing comma
+          labels=${labels%,}
+          echo "labels=${labels}" >> $GITHUB_ENV
+
+      - name: Set labels using GitHub Script
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const labels = "${{ env.labels }}".split(',');
+            if (labels.length > 0) {
+              const { owner, repo } = context.repo;
+              const issue_number = context.payload.pull_request ? context.payload.pull_request.number : context.issue.number;
+              await github.issues.addLabels({
+                owner,
+                repo,
+                issue_number,
+                labels,
+              });
+            }
