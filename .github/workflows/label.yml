@@ -80,14 +80,21 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const { context, github } = require('@actions/github');
             const labels = "${{ env.labels }}".split(',');
             if (labels.length > 0) {
               const { owner, repo } = context.repo;
               const issue_number = context.payload.pull_request ? context.payload.pull_request.number : context.issue.number;
-              await github.issues.addLabels({
-                owner,
-                repo,
-                issue_number,
-                labels,
-              });
+              
+              // Make sure to check if issue_number is defined
+              if (issue_number) {
+                await github.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number,
+                  labels,
+                });
+              } else {
+                console.log("No issue number found to assign labels.");
+              }
             }
