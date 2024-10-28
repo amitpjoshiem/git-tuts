@@ -6,8 +6,7 @@ on:
       - dev
 
 permissions:
-  issues: write
-  labels: write
+  issues: write  # Allow the workflow to write to issues
 
 jobs:
   create-labels:
