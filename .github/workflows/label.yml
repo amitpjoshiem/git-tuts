@@ -5,6 +5,10 @@ on:
     branches:
       - dev
 
+permissions:
+  issues: write  # Allow the workflow to write to issues
+  labels: write  # Allow the workflow to manage labels
+
 jobs:
   create-labels:
     runs-on: ubuntu-latest
