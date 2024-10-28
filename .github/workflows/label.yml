@@ -31,7 +31,9 @@ jobs:
           labels_to_create=""
           
           # Define your labels
-          labels="Config:red Database:blue Validation:purple documentation:green"
+
+          labels="Config:#B60205 Database:#5319E7 Validation:#0E8A16 Documentation:#FBCA04"
+
 
           for label in $labels; do
             label_name=$(echo $label | cut -d':' -f1)
@@ -69,7 +71,7 @@ jobs:
             elif [[ $file == "src/validations/"* ]]; then
               labels="${labels}Validation,"
             elif [[ $file == "src/routes/"* ]]; then
-              labels="${labels}documentation,"
+              labels="${labels}Documentation,"
             fi
           done
 
