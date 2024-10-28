@@ -1,9 +1,8 @@
 name: Manage Labels
 
 on:
-  push:
-    branches:
-      - dev
+    pull_request:
+      types: [opened]
 
 permissions:
   issues: write  # Allow the workflow to write to issues
@@ -13,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Updated to use the latest version
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up GitHub CLI
         env:
