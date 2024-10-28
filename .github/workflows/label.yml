@@ -80,7 +80,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { context, github } = require('@actions/github');
             const labels = "${{ env.labels }}".split(',');
             if (labels.length > 0) {
               const { owner, repo } = context.repo;
