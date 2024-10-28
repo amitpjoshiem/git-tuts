@@ -37,8 +37,10 @@ jobs:
 
           for label in $labels; do
             label_name=$(echo $label | cut -d':' -f1)
+            label_color=$(echo $label | cut -d':' -f2)
             if [[ ! $existing_labels =~ $label_name ]]; then
-              labels_to_create="$labels_to_create $label"
+            #  labels_to_create="$labels_to_create $label"
+              gh label create "$label_name" --color "${label_color//#/}" || echo "Label $label_name could not be created"
             fi
           done
 
