@@ -1,11 +1,11 @@
-name: Manage Labels
+name: Label Pull Request
 
 on:
-    pull_request:
-      types: [opened]
+  pull_request:
+    types: [opened, synchronize]  # Trigger when a PR is created or updated
 
 permissions:
-  issues: write  # Allow the workflow to write to issues
+  pull-requests: write  # Allow workflow to write to pull requests
 
 jobs:
   create-labels:
@@ -81,7 +81,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const labels = "${{ env.labels }}".split(',');
+            const labels = "${{ env.labels }}".split(',').filter(label => label);
             if (labels.length > 0) {
               const { owner, repo } = context.repo;
               const issue_number = context.payload.pull_request ? context.payload.pull_request.number : context.issue.number;
@@ -98,3 +98,5 @@ jobs:
                 console.log("No issue number found to assign labels.");
               }
             }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
