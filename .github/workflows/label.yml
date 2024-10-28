@@ -6,8 +6,8 @@ on:
       - dev
 
 permissions:
-  issues: write  # Allow the workflow to write to issues
-  labels: write  # Allow the workflow to manage labels
+  issues: write
+  labels: write
 
 jobs:
   create-labels:
@@ -51,8 +51,10 @@ jobs:
       - name: Get modified files
         id: modified-files
         run: |
+          # Check if git diff works; otherwise fallback to using git log
+          MODIFIED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" || git log --name-only -1)
           echo "MODIFIED_FILES<<EOF" >> $GITHUB_ENV
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} >> $GITHUB_ENV
+          echo "$MODIFIED_FILES" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - name: Assign labels based on modified files
