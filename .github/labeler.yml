@@ -1,3 +1,7 @@
-label2:
-- changed-files:
-  - any-glob-to-any-file: '.github/workflows/*'
+root:
+  - changed-files:
+  - any-glob-to-any-file: '*'
+workflows:
+  - '.github/workflows/**/*'
+scripts:
+  - 'scripts/**/*'
