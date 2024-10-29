@@ -1,6 +1,7 @@
 workflows:
   - changed-files:
       - any-glob-to-any-file: '.github/workflows/**/*'
+
 scripts:
   - changed-files:
       - any-glob-to-any-file: 'scripts/**/*'
@@ -11,24 +12,22 @@ ENV:
       - any-glob-to-any-file: '.env.example'
 
 # Add 'Package' label if Package.json file gets modified
-# Package:
-#   - 'package.json'
-
-# Add 'Config' label to any change to src files within the source dir EXCEPT for the docs sub-folder
-# Config:
-#   - 'src/config/*'
 Package:
   - changed-files:
       - any-glob-to-any-file: '.package.json'
-# # Add 'Config' label to any change to src files within the source dir EXCEPT for the docs sub-folder
+
+# Add 'Config' label to any change to src files within the source dir EXCEPT for the docs sub-folder
 Config:
   - changed-files:
       - any-glob-to-any-file: 'src/config/*'
 
-# Add 'root' label to any root file changes
+# Add 'root' label to any root file changes 
 root:
+- all:
   - changed-files:
-      - any-glob-to-any-file: '*'
+    - any-glob-to-any-file: '*'
+    - all-globs-to-all-files: ['!src/*']
+
 
 # Add 'Documentation' label to any changes within 'routes' folder or any subfolders or in any .md file
 Documentation:
