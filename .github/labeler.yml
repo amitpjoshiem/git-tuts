@@ -21,6 +21,11 @@ Config:
   - changed-files:
       - any-glob-to-any-file: 'src/config/*'
 
+# Add 'Validations' label to any change to src files within the source dir.
+Validations:
+  - changed-files:
+      - any-glob-to-any-file: 'src/validations/*'
+
 # Add 'root' label to any root file changes 
 root:
 - all:
