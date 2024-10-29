@@ -11,19 +11,19 @@ ENV:
       - any-glob-to-any-file: '.env.example'
 
 # Add 'Package' label if Package.json file gets modified
-Package:
-  - 'package.json'
+# Package:
+#   - 'package.json'
 
 # Add 'Config' label to any change to src files within the source dir EXCEPT for the docs sub-folder
-Config:
-  - 'src/config/*'
-# Package:
-#   - changed-files:
-#       - any-glob-to-any-file: '.package.json'
-# # Add 'Config' label to any change to src files within the source dir EXCEPT for the docs sub-folder
 # Config:
-#   - changed-files:
-#       - any-glob-to-any-file: 'src/config/*'
+#   - 'src/config/*'
+Package:
+  - changed-files:
+      - any-glob-to-any-file: '.package.json'
+# # Add 'Config' label to any change to src files within the source dir EXCEPT for the docs sub-folder
+Config:
+  - changed-files:
+      - any-glob-to-any-file: 'src/config/*'
 
 # Add 'root' label to any root file changes
 root:
