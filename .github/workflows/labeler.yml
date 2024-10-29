@@ -1,106 +1,16 @@
-name: Label Pull Request
-
-on:
-  pull_request:
-    types: [opened, synchronize]  # Trigger when a PR is created or updated
-
-permissions:
-  pull-requests: write  # Allow workflow to write to pull requests
+name: Labeler
+on: [pull_request]
 
 jobs:
-  create-labels:
+  label:
+  
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "GH_TOKEN is set up for GitHub CLI"
-
-      - name: Create labels if not exist
-        id: check-labels
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure GH_TOKEN is available
-        run: |
-          existing_labels=$(gh label list --json name -q '.[] | .name')
-          labels_to_create=""
-          
-          # Define your labels
-
-          labels="Config:#B60205 Database:#5319E7 Validation:#0E8A16 Documentation:#FBCA04"
-
-
-          for label in $labels; do
-            label_name=$(echo $label | cut -d':' -f1)
-            label_color=$(echo $label | cut -d':' -f2)
-            if [[ ! $existing_labels =~ $label_name ]]; then
-            #  labels_to_create="$labels_to_create $label"
-              gh label create "$label_name" --color "${label_color//#/}" || echo "Label $label_name could not be created"
-            fi
-          done
-
-          # Create labels only if they don't exist
-          if [ -n "$labels_to_create" ]; then
-            echo "Creating labels: $labels_to_create"
-            echo "$labels_to_create" | xargs -n1 gh label create
-          else
-            echo "All labels already exist."
-          fi
-
-      - name: Get modified files
-        id: modified-files
-        run: |
-          # Check if git diff works; otherwise fallback to using git log
-          MODIFIED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" || git log --name-only -1)
-          echo "MODIFIED_FILES<<EOF" >> $GITHUB_ENV
-          echo "$MODIFIED_FILES" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Assign labels based on modified files
-        id: assign-labels
-        run: |
-          labels=""
-          for file in $MODIFIED_FILES; do
-            if [[ $file == "src/config/"* ]]; then
-              labels="${labels}Config,"
-            elif [[ $file == "src/packages/"* ]]; then
-              labels="${labels}Database,"
-            elif [[ $file == "src/validations/"* ]]; then
-              labels="${labels}Validation,"
-            elif [[ $file == "src/routes/"* ]]; then
-              labels="${labels}Documentation,"
-            fi
-          done
-
-          # Remove trailing comma
-          labels=${labels%,}
-          echo "labels=${labels}" >> $GITHUB_ENV
-
-      - name: Set labels using GitHub Script
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const labels = "${{ env.labels }}".split(',').filter(label => label);
-            if (labels.length > 0) {
-              const { owner, repo } = context.repo;
-              const issue_number = context.payload.pull_request ? context.payload.pull_request.number : context.issue.number;
-              
-              // Make sure to check if issue_number is defined
-              if (issue_number) {
-                await github.issues.addLabels({
-                  owner,
-                  repo,
-                  issue_number,
-                  labels,
-                });
-              } else {
-                console.log("No issue number found to assign labels.");
-              }
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/labeler@v2
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        sync-labels: true
