@@ -37,7 +37,7 @@ root:
 # Add 'Documentation' label to any changes within 'routes' folder or any subfolders or in any .md file
 Documentation:
   - changed-files:
-      - any-glob-to-any-file: ['routes/**', '**/*.md']
+      - any-glob-to-any-file: ['src/routes/**', '**/*.md']
 
 # Add 'DB' label to any changes within 'src/packages/db/' folder.
 DB:
