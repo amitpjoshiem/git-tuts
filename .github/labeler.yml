@@ -43,4 +43,5 @@ Documentation:
 DB:
   - changed-files:
       - any-glob-to-any-file: ['src/packages/db/*']
+
 # check https://github.com/actions/labeler for more rules..
