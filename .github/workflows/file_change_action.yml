@@ -1,34 +1,29 @@
-# bare minimal
-name: changes
-on: push
-jobs:
-  changes:
-    runs-on: ubuntu-latest
-    steps:
-      - id: file_changes
-        uses: trilom/file-changes-action@v1.2.3
+name: List Modified Files
 
-### full
-name: changes
-on: [push, pull_request] # push or pull, or any event with custom pr number or before/after commit sha
+on:
+  pull_request: # Trigger on pull requests
+    types: [opened, synchronize, reopened] # Only trigger on specific PR events
+  push: # Also trigger on push events
+    branches:
+      - main # Adjust to your main branch name if different
+
 jobs:
-  changes:
+  list_changes:
     runs-on: ubuntu-latest
     steps:
-      - id: file_changes
+      - name: Checkout code
+        uses: actions/checkout@v2 # Check out the repository code
+
+      - name: Get modified files
+        id: file_changes
         uses: trilom/file-changes-action@v1.2.3
         with:
-          # optional target repo
-          githubRepo: trilom/file-changes-action
-          # optional token
-          githubToken: ${{ secrets.BOT_TOKEN }}
-          # optional output format
-          output: 'json'
-          # optional fileoutput format
-          fileOutput: 'csv'
-          # optional push before SHA (need both before and after)
-          pushBefore: 79eeec74aebc3deb0a2f6234c5ac13142e9224e5
-          # optional push after SHA (need both before and after)
-          pushAfter: 1c5a2bfde79e2c9cffb75b9a455391350fe69a40
-          # optional PR number to compare
-          prNumber: 36
+          githubRepo: ${{ github.repository }} # Use the current repo
+          githubToken: ${{ secrets.BOT_TOKEN }} # Use a GitHub token for authentication
+          output: 'json' # Output format can be adjusted as needed
+          fileOutput: 'csv' # Output modified files in CSV format
+
+      - name: Display modified files
+        run: |
+          echo "Modified files:"
+          cat ${{ steps.file_changes.outputs.file_output }} # Display the list of modified files
