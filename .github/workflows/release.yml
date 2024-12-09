@@ -1,0 +1,40 @@
+name: Generate Release Notes
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  generate-release-notes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Retrieve pull request information
+        id: pr-info
+        run: |
+          PR_NUMBER=$(echo "${{ github.event.pull_request.url }}" | awk -F'/' '{print $NF}')
+          PR_JSON=$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER")
+          TITLE=$(echo "$PR_JSON" | jq -r .title)
+          BODY=$(echo "$PR_JSON" | jq -r .body)
+          USER=$(echo "$PR_JSON" | jq -r .user.login)
+          LABELS=$(echo "$PR_JSON" | jq -r '.labels | map(.name) | join(", ")')
+          echo "TITLE=${TITLE}" >> $GITHUB_ENV
+          echo "BODY=${BODY}" >> $GITHUB_ENV
+          echo "USER=${USER}" >> $GITHUB_ENV
+          echo "LABELS=${LABELS}" >> $GITHUB_ENV
+
+      # Additional steps to extract, format, and append release notes
+      # (e.g., using scripts or other actions)
+
+      - name: Commit release notes
+        run: |
+          echo "Release notes for PR ${{ github.event.pull_request.number }}:"
+          echo "Title: ${{ env.TITLE }}"
+          echo "Body: ${{ env.BODY }}"
+          echo "User: ${{ env.USER }}"
+          echo "Labels: ${{ env.LABELS }}"
+          
+          # Add your logic to append the release notes to a file and commit changes
