@@ -2,3 +2,4 @@ enum Entity {
   BODY_BAR_PILATES
   CROSSFIT
 }
+
