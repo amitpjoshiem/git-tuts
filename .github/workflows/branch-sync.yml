@@ -3,7 +3,7 @@ name: Sync Branches
 on:
   schedule:
     # Runs every 5 minute
-    - cron: "5 * * * *"
+    - cron: "0 0 * * 1-5"
 
   workflow_dispatch: # Allow manual triggering
 
