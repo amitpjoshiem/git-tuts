@@ -17,13 +17,18 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Set up Git identity
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
       - name: Fetch latest changes from origin
         run: |
           git fetch origin --prune
 
       - name: Checkout stage branch and merge dev into it
         run: |
-          git checkout stage
+          git checkout stage || git checkout -b stage
           git pull origin stage --ff-only || true
           git merge --no-ff dev || true
 
