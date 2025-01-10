@@ -13,21 +13,23 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      - name: Create PR from dev to stage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fetch latest changes from origin
         run: |
-          gh pr create --base stage --head dev --title "Sync dev to stage" --body "Automated PR to sync dev branch to stage branch"
+          git fetch origin --prune
 
-      - name: Auto-Merge PR dev -> stage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout stage branch and merge dev into it
         run: |
-          PR_NUMBER=$(gh pr list --base stage --head dev --state open --json number -q '.[0].number')
-          if [ -n "$PR_NUMBER" ]; then
-            gh pr merge "$PR_NUMBER" --squash --delete-branch --admin
-          fi
+          git checkout stage
+          git pull origin stage --ff-only || true
+          git merge --no-ff dev || true
+
+      - name: Push changes to origin/stage branch
+        run: |
+          git push origin stage --force-with-lease || echo "No changes to push"
 
   sync-stage-to-prod:
     runs-on: ubuntu-latest
