@@ -5,7 +5,7 @@ on:
     branches: [ dev, stage, prod ]
 
 jobs:
-  Notify Slack:
+  Notify_Slack:
 
     runs-on: ubuntu-latest
 
