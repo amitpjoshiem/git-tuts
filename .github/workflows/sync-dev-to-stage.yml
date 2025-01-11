@@ -13,9 +13,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Sync Branches
+      - name: Create auto-merge Label (if missing)
+        uses: actions-ecosystem/action-create-label@v1
+        with:
+          github_token: ${{ secrets.PERSONAL_TOKEN }}
+          label: auto-merge
+          color: '#0e8a16'
+          description: 'Auto-merge PRs with this label'
+
+      - name: Sync Branches (Create PR)
         uses: tretuna/sync-branches@1.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
           FROM_BRANCH: 'dev'
           TO_BRANCH: 'stage'
+          PULL_REQUEST_TITLE: "Sync dev to stage"
+          PULL_REQUEST_BODY: "Automated PR to sync dev to stage."
+          PULL_REQUEST_LABELS: "auto-merge"
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: sync-branches
+
+    steps:
+      - name: Auto-Merge PR
+        uses: peter-evans/merge-pull-request@v3
+        with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          merge-method: squash # Change to merge, squash, or rebase
+          labels: auto-merge
+          commit-title: "Auto-merged dev into stage"
+          commit-message: "Automatically merged PR from dev to stage."
