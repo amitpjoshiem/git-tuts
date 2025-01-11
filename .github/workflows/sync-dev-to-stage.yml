@@ -13,14 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Create auto-merge Label (if missing)
-        uses: actions-ecosystem/action-create-label@v1
-        with:
-          github_token: ${{ secrets.PERSONAL_TOKEN }}
-          label: auto-merge
-          color: '#0e8a16'
-          description: 'Auto-merge PRs with this label'
-
       - name: Sync Branches (Create PR)
         uses: tretuna/sync-branches@1.4.0
         with:
