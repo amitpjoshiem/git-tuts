@@ -17,8 +17,8 @@ jobs:
         uses: tretuna/sync-branches@1.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
-          FROM_BRANCH: 'dev'
-          TO_BRANCH: 'stage'
-          PULL_REQUEST_TITLE: "Sync dev to stage"
-          PULL_REQUEST_BODY: "Automated PR to sync dev to stage."
+          FROM_BRANCH: 'stage'
+          TO_BRANCH: 'prod'
+          PULL_REQUEST_TITLE: "Sync stage to prod"
+          PULL_REQUEST_BODY: "Automated PR to sync stage to prod."
           PULL_REQUEST_LABELS: "auto-merge"
