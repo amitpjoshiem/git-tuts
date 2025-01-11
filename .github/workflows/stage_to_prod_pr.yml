@@ -1,0 +1,21 @@
+name: Sync stage to Prod
+
+on:
+  push:
+    branches:
+      - stage
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Sync Branches
+        uses: tretuna/sync-branches@1.4.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          FROM_BRANCH: 'stage'
+          TO_BRANCH: 'prod'
