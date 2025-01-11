@@ -33,7 +33,3 @@ jobs:
         with:
           github-token: ${{ secrets.PERSONAL_TOKEN }}
           target: minor
-          merge-method: squash # Change to merge, squash, or rebase
-          labels: auto-merge
-          commit-title: "Auto-merged dev into stage"
-          commit-message: "Automatically merged PR from dev to stage."
