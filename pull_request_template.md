@@ -14,7 +14,7 @@
 - [ ] Have you lint your code locally before submission?
 - [ ] The commit message follows our guidelines
 - [ ] Tests for the changes have been added (for bug fixes, features, docs update etc)
-- [ ] Approved by at least two developer: @amitpjoshiem, @ShubhamEngMind, @shreyashG13
+- [ ] Approved by at least two developer: @amitpjoshiem.
 - [ ] Ensure there aren't other open [Pull Requests](https://github.com/Engineersmind/Revi-backend/pulls) for the same update/change?
 
 ## Type of Change
