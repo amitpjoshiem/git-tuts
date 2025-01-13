@@ -18,9 +18,9 @@ jobs:
             - name: Custom Fact Name 1
               value: Custom Fact Value 1
             - name: Pull Request
-              value: "http://example.com/${{ github.run_id }}"
+              value: ${{ github.pull_request.html_url }}
           custom-actions: |
             - text: View PR
-              url: "http://valid.uri.com"
+              url: ${{ github.pull_request.html_url }}
             - text: View CI
               url: "http://example.com/${{ github.run_id }}"
