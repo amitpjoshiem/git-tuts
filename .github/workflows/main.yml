@@ -14,3 +14,13 @@ jobs:
         with:
           github-token: ${{ github.token }}
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          custom-facts: |
+            - name: Custom Fact Name 1
+              value: Custom Fact Value 1
+            - name: Pull Request
+              value: "http://example.com/${{ github.run_id }}"
+          custom-actions: |
+            - text: View PR
+              url: "http://valid.uri.com"
+            - text: View CI
+              url: "http://example.com/${{ github.run_id }}"
