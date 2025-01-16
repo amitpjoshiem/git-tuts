@@ -2,7 +2,7 @@ name: MS Teams Deploy Card
 
 on:
   workflow_run:
-    workflows: [Assign Reviewer]
+    workflows: [assign_reviewer]
     types:
       - completed
 jobs:
