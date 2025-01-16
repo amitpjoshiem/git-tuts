@@ -1,48 +1,16 @@
-name: PR Review and Notification
+name: MS Teams Deploy Card
 
-on:
-  pull_request:
-    types: [opened]
+on: [pull_request]
 
 jobs:
-  assign_reviewer_and_notify:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Assign Reviewers
-      - name: Assign Reviewer
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const pr = context.payload.pull_request;
-            const author = pr.user.login; // Gets the author name of PR.
-            const reviewers = ['amitpjoshiem', 'ShubhamEngMind', 'shreyashG13']; // GitHub usernames of the reviewers.
-            const filteredReviewers = reviewers.filter(reviewer => reviewer !== author); // Remove the author from the reviewers list.
-
-            // If there are still reviewers left after removing the author, assign them to the pull request
-            if (filteredReviewers.length > 0) {
-              const prNumber = pr.number;
-              await github.pulls.requestReviewers({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-                reviewers: filteredReviewers
-              });
-            }
-
-      # Step 2: Send Notification to MS Teams
       - uses: actions/checkout@v2
-      
       - name: Print GITHUB_EVENT_PATH
         run: |
           cat "${GITHUB_EVENT_PATH}"
-
-      - name: Extract Reviewers
-        run: |
-          REVIEWERS=$(jq -r '.pull_request.requested_reviewers[] | .login' "${GITHUB_EVENT_PATH}")
-          echo "REVIEWERS=$REVIEWERS" >> $GITHUB_ENV
-
       - uses: dchourasia/ms-teams-notification@1.0
         if: always()
         with:
@@ -50,7 +18,6 @@ jobs:
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
           show-on-exit: false
           allowed-file-len: 10
-          timezone: IN
           custom-facts: |
             - name: Source Branch
               value: ${{ github.event.pull_request.head.ref }}
@@ -58,8 +25,6 @@ jobs:
               value: ${{ github.event.pull_request.base.ref }}
             - name: Pull Request
               value: ${{ github.event.pull_request.html_url }}
-            - name: Reviewers
-              value: ${{ env.REVIEWERS }}
           custom-actions: |
             - text: View PR
               url: ${{ github.event.pull_request.html_url }}
