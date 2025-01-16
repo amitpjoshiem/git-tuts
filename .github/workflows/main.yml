@@ -8,8 +8,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      # this is the new step
-      - uses: dchourasia/ms-teams-notification@1.0 #  or "./" if in a local set-up
+      - name: Extract Reviewers
+        run: |
+          REVIEWERS=$(jq -r '.pull_request.requested_reviewers[] | .login' <<< "${GITHUB_EVENT_PATH}")
+          echo "REVIEWERS=${REVIEWERS[@]}" >> $GITHUB_ENV
+      - uses: dchourasia/ms-teams-notification@1.0
         if: always()
         with:
           github-token: ${{ github.token }}
@@ -25,7 +28,7 @@ jobs:
             - name: Pull Request
               value: ${{ github.event.pull_request.html_url }}
             - name: Reviewers
-              value: ${{ github.event.pull_request.requested_reviewers[*].login | join(', ') }}
+              value: ${{ env.REVIEWERS }}
           custom-actions: |
             - text: View PR
               url: ${{ github.event.pull_request.html_url }}
