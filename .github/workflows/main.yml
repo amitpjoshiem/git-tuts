@@ -25,7 +25,7 @@ jobs:
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
           show-on-exit: false
           allowed-file-len: 10
-          timezone: IN
+          timezone: Asia/Kolkata
           custom-facts: |
             - name: Source Branch
               value: ${{ github.event.pull_request.head.ref }}
