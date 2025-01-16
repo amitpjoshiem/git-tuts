@@ -14,6 +14,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
           webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          show-on-exit: false
           custom-facts: |
             - name: Custom Fact Name 1
               value: Custom Fact Value 1
