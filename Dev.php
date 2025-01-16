@@ -2,7 +2,7 @@
 
 echo "File created from Dev branch.....";
 
-echo "checking colors from dev..";
+echo "checking colors from dev.....";
 
 
 
