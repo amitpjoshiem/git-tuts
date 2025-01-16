@@ -1,0 +1,30 @@
+name: Assign Reviewer
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  assign_reviewer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign Reviewer
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login; //gets the author name of PR.
+            const reviewers = ['amitpjoshiem', 'nirav-engminds','amitjoshi2188']; //GitHub usernames of the reviewers.
+            const filteredReviewers = reviewers.filter(reviewer => reviewer !== author); // Remove the author from the reviewers list.
+
+            // If there are still reviewers left after removing the author, assign them to the pull request
+            if (filteredReviewers.length > 0) {
+              const prNumber = pr.number;
+              await github.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                reviewers: filteredReviewers
+              });
+            }
