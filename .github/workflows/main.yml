@@ -8,10 +8,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Print GITHUB_EVENT_PATH
+        run: |
+          cat "${GITHUB_EVENT_PATH}"
       - name: Extract Reviewers
         run: |
-          REVIEWERS=$(jq -r '.pull_request.requested_reviewers[] | .login' <<< "${GITHUB_EVENT_PATH}")
-          echo "REVIEWERS=${REVIEWERS[@]}" >> $GITHUB_ENV
+          REVIEWERS=$(jq -r '.pull_request.requested_reviewers[] | .login' "${GITHUB_EVENT_PATH}")
+          echo "REVIEWERS=$REVIEWERS" >> $GITHUB_ENV
       - uses: dchourasia/ms-teams-notification@1.0
         if: always()
         with:
