@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Regular expression pattern to match JIRA tickets (e.g., AJ-1234) with optional prefixes
+JIRA_PATTERN="^(Task|Bug|Refactor|Linting|Optimize|Merge)? ?AJ-[0-9]+.*$"
+
+# Gets the commit message
+message="$(cat $1)"
+
+# Check if the commit message contains a JIRA ticket number
+if ! [[ $message =~ $JIRA_PATTERN ]]; then
+    echo "🚨 Invalid commit message format! 😕"
+    echo "The commit message must follow this format:"
+    echo "- Allowed optional prefixes: Task, Bug, Refactor, Linting, Optimize"
+    echo "- Mandatory: AJ-[number] (e.g., AJ-1234)"
+    echo "- Optional: Additional description after the ticket number"
+    echo ""
+    echo "Examples of valid commit messages:"
+    echo "- Task AJ-1234 Add new feature"
+    echo "- Bug AJ-4567 Fix bug in login"
+    echo "- AJ-9876 Update documentation"
+    echo "- Refactor AJ-2468 Refactor code"
+    echo "- Linting AJ-1357 Fix linting issues"
+    echo "- Optimize AJ-8642 Optimize performance"
+    echo ""
+    echo "Your commit message was:"
+    echo "$message"
+    echo ""
+    echo "For more information, check the commit-msg script in .husky."
+    echo ""
+    exit 1
+fi
+
+# If the commit message is valid, allow the commit to proceed
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+if [ "$branch" = "prod" ] || [ "$branch" = "dev" ] || [ "$branch" = "stage" ]; then
+    echo "🚨You can't commit directly to the $branch branch🚨"
+    echo "Please create a separate branch from $branch branch and try again."
+    echo ""
+    exit 1
+fi
+exit 0
