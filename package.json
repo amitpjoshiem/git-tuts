@@ -1,18 +1,20 @@
 {
-  "name": "git-tuts",
-  "version": "1.0.0",
-  "description": "git-tuts-for-learning",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "husky": "^9.1.7"
-  },
-  "devDependencies": {
-    "husky": "^8.0.0"
-  }
+    "name": "git-tuts",
+    "version": "1.0.0",
+    "description": "git-tuts-for-learning",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepare": "husky install",
+        "prettier": "prettier --write \"**/*.{html,php,ts,js,json,md}\""
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "husky": "^9.1.7",
+        "prettier": "^3.4.2"
+    },
+    "devDependencies": {
+        "husky": "^8.0.0"
+    }
 }
