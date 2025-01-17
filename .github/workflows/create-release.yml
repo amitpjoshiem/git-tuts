@@ -22,12 +22,6 @@ jobs:
         cache: npm
     - name: Install latest npm version
       run: npm install -g npm@latest
-    - name: Install dependencies and build
-      run: npm ci
-    - name: Publish package
-      run: npm publish --provenance
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   create-github-release:
     name: Create GitHub Release
