@@ -1,0 +1,30 @@
+name: MS Teams Deploy Card
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Print GITHUB_EVENT_PATH
+        run: |
+          cat "${GITHUB_EVENT_PATH}"
+      - uses: dchourasia/ms-teams-notification@1.0
+        if: always()
+        with:
+          github-token: ${{ github.token }}
+          webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          show-on-exit: false
+          allowed-file-len: 10
+          custom-facts: |
+            - name: Source Branch
+              value: ${{ github.event.pull_request.head.ref }}
+            - name: Target Branch
+              value: ${{ github.event.pull_request.base.ref }}
+            - name: Pull Request
+              value: ${{ github.event.pull_request.html_url }}
+          custom-actions: |
+            - text: View PR
+              url: ${{ github.event.pull_request.html_url }}

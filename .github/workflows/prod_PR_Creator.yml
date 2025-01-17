@@ -1,0 +1,24 @@
+name: Stage to Prod
+
+on:
+  push:
+    branches:
+      - stage
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Sync Branches (Create PR)
+        uses: tretuna/sync-branches@1.4.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+          FROM_BRANCH: 'stage'
+          TO_BRANCH: 'prod'
+          PULL_REQUEST_TITLE: "Sync stage to prod"
+          PULL_REQUEST_BODY: "Automated PR to sync stage to prod."
+          PULL_REQUEST_LABELS: "auto-merge"

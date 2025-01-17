@@ -1,5 +1,6 @@
 <?php
-
-echo "<pre>";
-    print_r("hello");
-echo "</pre>";
+function_exists( function pre($data){
+    echo "<pre>";
+    print_r($data);
+    echo "</pre>";
+});
