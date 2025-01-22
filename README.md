@@ -1,13 +1,3 @@
 # git-tuts
 
-git-tuts-for-learning
-
-
-Changes for Readme file..
-
-
-
-
-
-
-dd
+git-tuts-for-learning Checking with different workflows. Changes for Readme file..
