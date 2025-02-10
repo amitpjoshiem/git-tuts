@@ -4,8 +4,7 @@
 local_branch="$(git rev-parse --abbrev-ref HEAD)"
 
 # Define the regex pattern for valid branch names
-valid_branch_regex="^(Task|Bug|Refactor|Linting|Optimize|Merge)?/?[a-z]+/? ?AJ-[0-9]+.*$"
-
+valid_branch_regex="^(Task|Bug|Refactor|Linting|Optimize|Merge)/[^/]+/AJ-[0-9]+.*$|^AJ-[0-9]+.*$"
 # Error message to display
 message="🚨Branch name violation🚨. Allowed formats:
 - Task/username/AJ-1234
