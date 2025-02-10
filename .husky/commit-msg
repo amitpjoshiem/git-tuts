@@ -6,6 +6,12 @@ JIRA_PATTERN="^(Task|Bug|Refactor|Linting|Optimize|Merge)? ?AJ-[0-9]+.*$"
 # Gets the commit message
 message="$(cat $1)"
 
+# Check if the commit message is a merge commit
+if [[ "$message" =~ ^Merge\ branch ]]; then
+    echo "Skipping JIRA check for merge commit."
+    exit 0
+fi
+
 # Check if the commit message contains a JIRA ticket number
 if ! [[ $message =~ $JIRA_PATTERN ]]; then
     echo "🚨 Invalid commit message format! 😕"
@@ -30,10 +36,10 @@ if ! [[ $message =~ $JIRA_PATTERN ]]; then
     exit 1
 fi
 
-# If the commit message is valid, allow the commit to proceed
+# Prevent commits directly to prod, dev, or stage branches
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
-if [ "$branch" = "prod" ] || [ "$branch" = "dev" ] || [ "$branch" = "stage" ]; then
+if [[ "$branch" == "prod" || "$branch" == "dev" || "$branch" == "stage" ]]; then
     echo "🚨You can't commit directly to the $branch branch🚨"
     echo "Please create a separate branch from $branch branch and try again."
     echo ""
