@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Get the current branch name
+local_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# Define the regex pattern for valid branch names
+valid_branch_regex="^(Task|Bug|Refactor|Linting|Optimize|Merge)/[^/]+/AJ-[0-9]+.*$|^AJ-[0-9]+.*$"
+# Error message to display
+message="🚨Branch name violation🚨. Allowed formats:
+- Task/username/AJ-1234
+- Bug/username/AJ-5678 
+- Refactor/username/AJ-9101
+- Linting/username/AJ-2345
+- Optimize/username/AJ-3456
+- Merge/username/AJ-4567
+- AJ-7890 (without prefix)
+Please rename your branch ($local_branch) to match these rules."
+
+# Check if the branch name matches the regex
+if [[ ! "$local_branch" =~ $valid_branch_regex ]]; then
+    echo "$message"
+    exit 1
+fi
+
+exit 0
