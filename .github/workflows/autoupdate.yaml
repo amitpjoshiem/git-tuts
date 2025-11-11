@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - dev
+    - stage
 jobs:
   autoupdate:
     name: autoupdate
